@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>みんなの経理 | 無料税金計算</title>
+  <title>みんなの経理 | 無料会計ソフト</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -13,19 +13,19 @@
       line-height: 1.6;
     }
     .container {
-      max-width: 640px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
     }
     h1 {
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       font-size: 1.5em;
     }
     .subtitle {
       text-align: center;
       color: #666;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       font-size: 0.9em;
     }
 
@@ -35,7 +35,7 @@
       justify-content: flex-end;
       align-items: center;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       font-size: 0.85em;
     }
     .auth-bar .user-info {
@@ -77,20 +77,46 @@
       font-weight: normal;
     }
 
-    /* Setup screen (business type selection) */
+    /* Navigation */
+    .nav-bar {
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .nav-item {
+      flex: 1;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.85em;
+      font-weight: bold;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .nav-item:hover { background: #f9f9f9; color: #333; }
+    .nav-item.active {
+      color: #4CAF50;
+      border-bottom-color: #4CAF50;
+      background: #f8fdf8;
+    }
+
+    /* Setup screen */
     .setup-screen {
       display: none;
       text-align: center;
       padding: 40px 20px;
     }
-    .setup-screen h2 {
-      margin-bottom: 12px;
-      font-size: 1.3em;
-    }
-    .setup-screen p {
-      color: #666;
-      margin-bottom: 32px;
-    }
+    .setup-screen h2 { margin-bottom: 12px; font-size: 1.3em; }
+    .setup-screen p { color: #666; margin-bottom: 32px; }
     .setup-options {
       display: flex;
       gap: 16px;
@@ -115,7 +141,7 @@
     .setup-option .name { font-weight: bold; font-size: 1.1em; margin-bottom: 4px; }
     .setup-option .desc { color: #888; font-size: 0.85em; }
 
-    /* Main app (hidden until type selected) */
+    /* Main app */
     .main-app { display: none; }
 
     .card {
@@ -139,15 +165,16 @@
       font-size: 0.9em;
     }
     .hint { color: #888; font-size: 0.8em; font-weight: normal; }
-    input[type="number"], select {
+    input[type="number"], input[type="text"], input[type="date"], select, textarea {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #ddd;
       border-radius: 8px;
       font-size: 16px;
       -webkit-appearance: none;
+      font-family: inherit;
     }
-    input[type="number"]:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: #4CAF50;
       box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
@@ -161,7 +188,7 @@
       width: 20px;
       height: 20px;
     }
-    .btn-calc {
+    .btn-primary {
       width: 100%;
       padding: 14px;
       background: #4CAF50;
@@ -173,12 +200,12 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-calc:hover { background: #43A047; }
-    .btn-calc:active { background: #388E3C; }
+    .btn-primary:hover { background: #43A047; }
+    .btn-primary:active { background: #388E3C; }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
 
-    .btn-save {
-      width: 100%;
-      padding: 12px;
+    .btn-secondary {
+      padding: 10px 20px;
       background: #1a73e8;
       color: white;
       border: none;
@@ -186,11 +213,33 @@
       font-size: 0.95em;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 12px;
       transition: background 0.2s;
     }
-    .btn-save:hover { background: #1565c0; }
-    .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-secondary:hover { background: #1565c0; }
+    .btn-secondary:disabled { background: #ccc; cursor: not-allowed; }
+
+    .btn-danger {
+      padding: 6px 12px;
+      background: #fff;
+      color: #d32f2f;
+      border: 1px solid #d32f2f;
+      border-radius: 6px;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+    .btn-danger:hover { background: #ffebee; }
+
+    .btn-outline {
+      padding: 10px 20px;
+      background: #fff;
+      color: #4CAF50;
+      border: 2px solid #4CAF50;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-outline:hover { background: #f1f8e9; }
 
     .results { display: none; }
     .result-row {
@@ -225,8 +274,121 @@
       margin-top: 8px;
       color: #4CAF50;
     }
+    .page { display: none; }
+    .page.active { display: block; }
     .section { display: none; }
     .section.active { display: block; }
+
+    /* Table styles */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+    }
+    .data-table th {
+      background: #f5f5f5;
+      padding: 10px 8px;
+      text-align: left;
+      font-size: 0.85em;
+      border-bottom: 2px solid #ddd;
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+    .data-table tr:hover { background: #fafafa; }
+    .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    /* Form row (inline) */
+    .form-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .form-row .form-group { margin-bottom: 0; }
+    .form-row .form-group.w1 { flex: 1; min-width: 100px; }
+    .form-row .form-group.w2 { flex: 2; min-width: 150px; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .toolbar .spacer { flex: 1; }
+
+    /* Invoice specific */
+    .invoice-preview {
+      background: #fff;
+      padding: 40px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 16px;
+    }
+    .invoice-preview h2 {
+      text-align: center;
+      font-size: 1.5em;
+      border-bottom: 3px double #333;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .invoice-header .left { flex: 1; }
+    .invoice-header .right { text-align: right; font-size: 0.9em; color: #666; }
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    .invoice-table th {
+      background: #4CAF50;
+      color: #fff;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .invoice-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .invoice-table .num { text-align: right; }
+    .invoice-totals {
+      text-align: right;
+      margin-top: 16px;
+    }
+    .invoice-totals .row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 24px;
+      padding: 4px 0;
+    }
+    .invoice-totals .row.grand {
+      font-size: 1.3em;
+      font-weight: bold;
+      border-top: 2px solid #333;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .invoice-from {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+      font-size: 0.9em;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -244,6 +406,15 @@
       text-decoration: underline;
       padding: 0;
       width: auto;
+    }
+
+    /* Print styles for invoice */
+    @media print {
+      body { background: #fff; }
+      .container { max-width: 100%; padding: 0; }
+      .auth-bar, .nav-bar, .subtitle, h1, footer, .no-print { display: none !important; }
+      .card { box-shadow: none; border: none; padding: 0; }
+      .invoice-preview { border: none; padding: 20px 0; }
     }
   </style>
 </head>
@@ -290,115 +461,287 @@
     <!-- Main app -->
     <div class="main-app" id="main-app">
 
-      <!-- ===== 個人事業主 ===== -->
-      <div class="section" id="section-sole">
-        <div class="card">
-          <h2>入力 <button class="change-type" onclick="resetBusinessMode()">事業形態を変更</button></h2>
-          <div class="form-group">
-            <label>年度</label>
-            <select id="s-fiscalYear">
-              <option value="2025" selected>令和7年 (2025)</option>
-              <option value="2024">令和6年 (2024)</option>
-            </select>
+      <!-- Navigation -->
+      <div class="nav-bar">
+        <button class="nav-item active" onclick="switchPage('tax')" id="nav-tax">税金計算</button>
+        <button class="nav-item" onclick="switchPage('journal')" id="nav-journal">仕訳帳</button>
+        <button class="nav-item" onclick="switchPage('pl')" id="nav-pl">損益計算書</button>
+        <button class="nav-item" onclick="switchPage('invoice')" id="nav-invoice">請求書</button>
+      </div>
+
+      <!-- ==================== 税金計算 ==================== -->
+      <div class="page active" id="page-tax">
+        <!-- 個人事業主 -->
+        <div class="section" id="section-sole">
+          <div class="card">
+            <h2>入力 <button class="change-type" onclick="resetBusinessMode()">事業形態を変更</button></h2>
+            <div class="form-group">
+              <label>年度</label>
+              <select id="s-fiscalYear">
+                <option value="2025" selected>令和7年 (2025)</option>
+                <option value="2024">令和6年 (2024)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>売上（年間） <span class="hint">円</span></label>
+              <input type="number" id="s-revenue" value="8000000" min="0" step="10000">
+            </div>
+            <div class="form-group">
+              <label>経費（年間） <span class="hint">円</span></label>
+              <input type="number" id="s-expenses" value="2000000" min="0" step="10000">
+            </div>
+            <div class="form-group">
+              <label>業種</label>
+              <select id="s-businessType">
+                <option value="type1" selected>第1種（物品販売・飲食店等）5%</option>
+                <option value="type2">第2種（畜産業等）4%</option>
+                <option value="type3">第3種（医業・士業等）5%</option>
+                <option value="type3low">第3種（あんま・マッサージ等）3%</option>
+                <option value="exempt">非課税（農業・林業・作家等）</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="s-blueReturn" checked>
+                <label for="s-blueReturn" style="margin-bottom:0">青色申告（e-Tax / 電子帳簿）</label>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="calcSole()">計算する</button>
           </div>
-          <div class="form-group">
-            <label>売上（年間） <span class="hint">円</span></label>
-            <input type="number" id="s-revenue" value="8000000" min="0" step="10000">
-          </div>
-          <div class="form-group">
-            <label>経費（年間） <span class="hint">円</span></label>
-            <input type="number" id="s-expenses" value="2000000" min="0" step="10000">
-          </div>
-          <div class="form-group">
-            <label>業種</label>
-            <select id="s-businessType">
-              <option value="type1" selected>第1種（物品販売・飲食店等）5%</option>
-              <option value="type2">第2種（畜産業等）4%</option>
-              <option value="type3">第3種（医業・士業等）5%</option>
-              <option value="type3low">第3種（あんま・マッサージ等）3%</option>
-              <option value="exempt">非課税（農業・林業・作家等）</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="checkbox-group">
-              <input type="checkbox" id="s-blueReturn" checked>
-              <label for="s-blueReturn" style="margin-bottom:0">青色申告（e-Tax / 電子帳簿）</label>
+
+          <div class="card results" id="s-results">
+            <h2>結果</h2>
+            <div class="result-row"><span class="label">事業所得</span><span class="value" id="s-r-income"></span></div>
+            <div class="result-row"><span class="label">所得控除合計</span><span class="value" id="s-r-deductions"></span></div>
+            <div class="result-row"><span class="label">課税所得</span><span class="value" id="s-r-taxable"></span></div>
+            <div class="result-row"><span class="label">所得税</span><span class="value" id="s-r-incometax"></span></div>
+            <div class="result-row"><span class="label">復興特別所得税</span><span class="value" id="s-r-reconstruction"></span></div>
+            <div class="result-row"><span class="label">住民税</span><span class="value" id="s-r-resident"></span></div>
+            <div class="result-row"><span class="label">個人事業税</span><span class="value" id="s-r-business"></span></div>
+            <div class="result-row total"><span class="label">合計税額</span><span class="value" id="s-r-total"></span></div>
+            <div class="rate" id="s-r-rate"></div>
+            <button class="btn-secondary" style="width:100%;margin-top:12px" id="s-btn-save" onclick="saveToSheets('sole')" disabled>Google Sheetsに保存</button>
+            <div class="save-status" id="s-save-status"></div>
+            <div class="note">
+              ※ 概算です。社会保険料控除・医療費控除・扶養控除等は含まれていません。
             </div>
           </div>
-          <button class="btn-calc" onclick="calcSole()">計算する</button>
         </div>
 
-        <div class="card results" id="s-results">
-          <h2>結果</h2>
-          <div class="result-row"><span class="label">事業所得</span><span class="value" id="s-r-income"></span></div>
-          <div class="result-row"><span class="label">所得控除合計</span><span class="value" id="s-r-deductions"></span></div>
-          <div class="result-row"><span class="label">課税所得</span><span class="value" id="s-r-taxable"></span></div>
-          <div class="result-row"><span class="label">所得税</span><span class="value" id="s-r-incometax"></span></div>
-          <div class="result-row"><span class="label">復興特別所得税</span><span class="value" id="s-r-reconstruction"></span></div>
-          <div class="result-row"><span class="label">住民税</span><span class="value" id="s-r-resident"></span></div>
-          <div class="result-row"><span class="label">個人事業税</span><span class="value" id="s-r-business"></span></div>
-          <div class="result-row total"><span class="label">合計税額</span><span class="value" id="s-r-total"></span></div>
-          <div class="rate" id="s-r-rate"></div>
-          <button class="btn-save" id="s-btn-save" onclick="saveToSheets('sole')" disabled>Google Sheetsに保存</button>
-          <div class="save-status" id="s-save-status"></div>
-          <div class="note">
-            ※ 概算です。社会保険料控除・医療費控除・扶養控除等は含まれていません。
+        <!-- 法人 -->
+        <div class="section" id="section-corp">
+          <div class="card">
+            <h2>入力 <button class="change-type" onclick="resetBusinessMode()">事業形態を変更</button></h2>
+            <div class="form-group">
+              <label>年度</label>
+              <select id="c-fiscalYear">
+                <option value="2025" selected>令和7年 (2025)</option>
+                <option value="2024">令和6年 (2024)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>売上（年間） <span class="hint">円</span></label>
+              <input type="number" id="c-revenue" value="20000000" min="0" step="10000">
+            </div>
+            <div class="form-group">
+              <label>経費（年間） <span class="hint">役員報酬含む</span></label>
+              <input type="number" id="c-expenses" value="10000000" min="0" step="10000">
+            </div>
+            <div class="form-group">
+              <label>資本金</label>
+              <select id="c-capitalTier">
+                <option value="under10m" selected>1,000万円以下</option>
+                <option value="under100m">1,000万円超〜1億円以下</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="c-employees50">
+                <label for="c-employees50" style="margin-bottom:0">従業員50人超</label>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="calcCorp()">計算する</button>
+          </div>
+
+          <div class="card results" id="c-results">
+            <h2>結果</h2>
+            <div class="result-row"><span class="label">課税所得</span><span class="value" id="c-r-taxable"></span></div>
+            <div class="result-row"><span class="label">法人税</span><span class="value" id="c-r-corporate"></span></div>
+            <div class="result-row"><span class="label">地方法人税</span><span class="value" id="c-r-local"></span></div>
+            <div class="result-row"><span class="label">法人住民税</span><span class="value" id="c-r-resident"></span></div>
+            <div class="result-row"><span class="label">法人事業税</span><span class="value" id="c-r-enterprise"></span></div>
+            <div class="result-row"><span class="label">特別法人事業税</span><span class="value" id="c-r-special"></span></div>
+            <div class="result-row total"><span class="label">合計税額</span><span class="value" id="c-r-total"></span></div>
+            <div class="rate" id="c-r-rate"></div>
+            <button class="btn-secondary" style="width:100%;margin-top:12px" id="c-btn-save" onclick="saveToSheets('corp')" disabled>Google Sheetsに保存</button>
+            <div class="save-status" id="c-save-status"></div>
+            <div class="note">
+              ※ 中小法人（資本金1億円以下）向けの概算です。外形標準課税・繰越欠損金等は未考慮です。
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ===== 法人 ===== -->
-      <div class="section" id="section-corp">
+      <!-- ==================== 仕訳帳 ==================== -->
+      <div class="page" id="page-journal">
         <div class="card">
-          <h2>入力 <button class="change-type" onclick="resetBusinessMode()">事業形態を変更</button></h2>
-          <div class="form-group">
-            <label>年度</label>
-            <select id="c-fiscalYear">
-              <option value="2025" selected>令和7年 (2025)</option>
-              <option value="2024">令和6年 (2024)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>売上（年間） <span class="hint">円</span></label>
-            <input type="number" id="c-revenue" value="20000000" min="0" step="10000">
-          </div>
-          <div class="form-group">
-            <label>経費（年間） <span class="hint">役員報酬含む</span></label>
-            <input type="number" id="c-expenses" value="10000000" min="0" step="10000">
-          </div>
-          <div class="form-group">
-            <label>資本金</label>
-            <select id="c-capitalTier">
-              <option value="under10m" selected>1,000万円以下</option>
-              <option value="under100m">1,000万円超〜1億円以下</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="checkbox-group">
-              <input type="checkbox" id="c-employees50">
-              <label for="c-employees50" style="margin-bottom:0">従業員50人超</label>
+          <h2>仕訳入力</h2>
+          <div class="form-row">
+            <div class="form-group w1">
+              <label>日付</label>
+              <input type="date" id="j-date">
+            </div>
+            <div class="form-group w2">
+              <label>摘要</label>
+              <input type="text" id="j-description" placeholder="取引の内容">
             </div>
           </div>
-          <button class="btn-calc" onclick="calcCorp()">計算する</button>
+          <div class="form-row">
+            <div class="form-group w1">
+              <label>借方科目</label>
+              <select id="j-debit"></select>
+            </div>
+            <div class="form-group w1">
+              <label>貸方科目</label>
+              <select id="j-credit"></select>
+            </div>
+            <div class="form-group w1">
+              <label>金額 <span class="hint">円</span></label>
+              <input type="number" id="j-amount" min="0" step="1" placeholder="0">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addJournalEntry()">仕訳を登録</button>
+          <div class="save-status" id="j-save-status"></div>
         </div>
 
-        <div class="card results" id="c-results">
-          <h2>結果</h2>
-          <div class="result-row"><span class="label">課税所得</span><span class="value" id="c-r-taxable"></span></div>
-          <div class="result-row"><span class="label">法人税</span><span class="value" id="c-r-corporate"></span></div>
-          <div class="result-row"><span class="label">地方法人税</span><span class="value" id="c-r-local"></span></div>
-          <div class="result-row"><span class="label">法人住民税</span><span class="value" id="c-r-resident"></span></div>
-          <div class="result-row"><span class="label">法人事業税</span><span class="value" id="c-r-enterprise"></span></div>
-          <div class="result-row"><span class="label">特別法人事業税</span><span class="value" id="c-r-special"></span></div>
-          <div class="result-row total"><span class="label">合計税額</span><span class="value" id="c-r-total"></span></div>
-          <div class="rate" id="c-r-rate"></div>
-          <button class="btn-save" id="c-btn-save" onclick="saveToSheets('corp')" disabled>Google Sheetsに保存</button>
-          <div class="save-status" id="c-save-status"></div>
-          <div class="note">
-            ※ 中小法人（資本金1億円以下）向けの概算です。外形標準課税・繰越欠損金等は未考慮です。
+        <div class="card">
+          <div class="toolbar">
+            <h2 style="border:none;margin:0;padding:0">仕訳一覧</h2>
+            <div class="spacer"></div>
+            <button class="btn-secondary" onclick="loadJournalEntries()" id="j-btn-load" disabled>読み込み</button>
+          </div>
+          <div id="j-table-container">
+            <div class="empty-state" id="j-empty">
+              <p>仕訳データがありません</p>
+              <p style="font-size:0.85em;margin-top:8px">Googleにログインして仕訳を登録してください</p>
+            </div>
+            <table class="data-table" id="j-table" style="display:none">
+              <thead>
+                <tr>
+                  <th>日付</th>
+                  <th>摘要</th>
+                  <th>借方科目</th>
+                  <th>貸方科目</th>
+                  <th style="text-align:right">金額</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="j-tbody"></tbody>
+            </table>
           </div>
         </div>
       </div>
+
+      <!-- ==================== 損益計算書 ==================== -->
+      <div class="page" id="page-pl">
+        <div class="card">
+          <div class="toolbar">
+            <h2 style="border:none;margin:0;padding:0">損益計算書</h2>
+            <div class="spacer"></div>
+            <select id="pl-period" style="width:auto;padding:6px 12px;font-size:0.85em">
+              <option value="all">全期間</option>
+            </select>
+            <button class="btn-secondary" onclick="generatePL()" id="pl-btn-generate" disabled>集計</button>
+          </div>
+          <div id="pl-content">
+            <div class="empty-state" id="pl-empty">
+              <p>仕訳データを登録すると損益計算書が自動生成されます</p>
+            </div>
+            <div id="pl-report" style="display:none">
+              <table class="data-table">
+                <thead>
+                  <tr><th colspan="2" style="text-align:center;font-size:1em">損益計算書</th></tr>
+                </thead>
+                <tbody id="pl-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 請求書 ==================== -->
+      <div class="page" id="page-invoice">
+        <div class="card no-print">
+          <h2>請求書作成</h2>
+          <div class="form-row">
+            <div class="form-group w2">
+              <label>請求先</label>
+              <input type="text" id="inv-client" placeholder="株式会社○○">
+            </div>
+            <div class="form-group w1">
+              <label>請求日</label>
+              <input type="date" id="inv-date">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group w1">
+              <label>請求番号</label>
+              <input type="text" id="inv-number" placeholder="INV-001">
+            </div>
+            <div class="form-group w1">
+              <label>支払期限</label>
+              <input type="date" id="inv-due">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>差出人情報</label>
+            <textarea id="inv-from" rows="3" placeholder="氏名または屋号&#10;住所&#10;電話番号"></textarea>
+          </div>
+
+          <h3 style="font-size:0.95em;margin:16px 0 8px">明細</h3>
+          <div id="inv-items">
+            <div class="form-row inv-item-row">
+              <div class="form-group w2">
+                <input type="text" placeholder="品名" class="inv-item-name">
+              </div>
+              <div class="form-group" style="width:70px">
+                <input type="number" placeholder="数量" class="inv-item-qty" value="1" min="1">
+              </div>
+              <div class="form-group w1">
+                <input type="number" placeholder="単価" class="inv-item-price" min="0">
+              </div>
+            </div>
+          </div>
+          <button class="btn-outline" onclick="addInvoiceItem()" style="width:100%;margin-bottom:16px">+ 明細行を追加</button>
+
+          <div class="form-row">
+            <div class="form-group w1">
+              <label>消費税率</label>
+              <select id="inv-tax-rate">
+                <option value="10" selected>10%</option>
+                <option value="8">8%（軽減税率）</option>
+                <option value="0">非課税</option>
+              </select>
+            </div>
+            <div class="form-group w1">
+              <label>備考</label>
+              <input type="text" id="inv-notes" placeholder="振込先等">
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="generateInvoice()">請求書を作成</button>
+        </div>
+
+        <div id="inv-preview-container" style="display:none">
+          <div class="toolbar no-print" style="margin-top:16px">
+            <button class="btn-secondary" onclick="printInvoice()">PDF出力 / 印刷</button>
+            <button class="btn-secondary" onclick="saveInvoiceToSheets()" id="inv-btn-save" disabled>Sheetsに保存</button>
+            <div class="save-status" id="inv-save-status" style="margin:0"></div>
+          </div>
+          <div class="invoice-preview" id="inv-preview"></div>
+        </div>
+      </div>
+
     </div>
 
     <footer>
@@ -410,7 +753,7 @@
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!-- Global app state and functions (non-module, so onclick works immediately) -->
+  <!-- Global app state and functions -->
   <script>
     var CLIENT_ID = '267211003481-pck8amdusjfedr9gvvlje4uke53ig4lh.apps.googleusercontent.com';
     var SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
@@ -422,11 +765,92 @@
     var wasmReady = false;
     var wasmCalcSole = null;
     var wasmCalcCorp = null;
+    var journalEntries = [];
+    var currentInvoiceData = null;
+
+    var SPREADSHEET_TITLE = 'みんなの経理データ';
+
+    // 勘定科目マスタ
+    var ACCOUNTS = {
+      revenue: [
+        { code: '400', name: '売上高' },
+        { code: '410', name: '雑収入' },
+      ],
+      expense: [
+        { code: '500', name: '仕入高' },
+        { code: '510', name: '給料手当' },
+        { code: '511', name: '役員報酬' },
+        { code: '520', name: '地代家賃' },
+        { code: '521', name: '水道光熱費' },
+        { code: '522', name: '通信費' },
+        { code: '523', name: '消耗品費' },
+        { code: '524', name: '旅費交通費' },
+        { code: '525', name: '接待交際費' },
+        { code: '526', name: '広告宣伝費' },
+        { code: '527', name: '支払手数料' },
+        { code: '528', name: '保険料' },
+        { code: '529', name: '修繕費' },
+        { code: '530', name: '租税公課' },
+        { code: '531', name: '減価償却費' },
+        { code: '532', name: '外注費' },
+        { code: '539', name: '雑費' },
+      ],
+      asset: [
+        { code: '100', name: '現金' },
+        { code: '110', name: '普通預金' },
+        { code: '120', name: '売掛金' },
+        { code: '130', name: '未収入金' },
+      ],
+      liability: [
+        { code: '200', name: '買掛金' },
+        { code: '210', name: '未払金' },
+        { code: '220', name: '預り金' },
+        { code: '230', name: '借入金' },
+      ],
+    };
+
+    function getAllAccounts() {
+      var all = [];
+      ['asset', 'liability', 'revenue', 'expense'].forEach(function(cat) {
+        ACCOUNTS[cat].forEach(function(a) { all.push(a); });
+      });
+      return all;
+    }
+
+    function getAccountCategory(code) {
+      for (var cat in ACCOUNTS) {
+        for (var i = 0; i < ACCOUNTS[cat].length; i++) {
+          if (ACCOUNTS[cat][i].code === code) return cat;
+        }
+      }
+      return null;
+    }
+
+    function getAccountName(code) {
+      var all = getAllAccounts();
+      for (var i = 0; i < all.length; i++) {
+        if (all[i].code === code) return all[i].name;
+      }
+      return code;
+    }
 
     function fmt(n) {
       return Number(n).toLocaleString('ja-JP') + '円';
     }
 
+    function fmtNum(n) {
+      return Number(n).toLocaleString('ja-JP');
+    }
+
+    // ==================== Navigation ====================
+    function switchPage(pageName) {
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+      document.getElementById('page-' + pageName).classList.add('active');
+      document.getElementById('nav-' + pageName).classList.add('active');
+    }
+
+    // ==================== Auth & Setup ====================
     function applyBusinessMode() {
       var setupEl = document.getElementById('setup-screen');
       var mainEl = document.getElementById('main-app');
@@ -494,8 +918,15 @@
       document.getElementById('auth-signed-in').style.display = 'none';
       document.getElementById('user-name').textContent = '';
       document.getElementById('user-avatar').src = '';
-      document.querySelectorAll('.btn-save').forEach(function(b) { b.disabled = true; });
+      updateAuthButtons(false);
       applyBusinessMode();
+    }
+
+    function updateAuthButtons(loggedIn) {
+      document.querySelectorAll('.btn-save, #s-btn-save, #c-btn-save').forEach(function(b) { b.disabled = !loggedIn; });
+      document.getElementById('j-btn-load').disabled = !loggedIn;
+      document.getElementById('pl-btn-generate').disabled = !loggedIn;
+      document.getElementById('inv-btn-save').disabled = !loggedIn;
     }
 
     function initGoogleAuth() {
@@ -508,9 +939,8 @@
             accessToken = resp.access_token;
             document.getElementById('auth-signed-out').style.display = 'none';
             document.getElementById('auth-signed-in').style.display = 'block';
-            document.querySelectorAll('.btn-save').forEach(function(b) { b.disabled = false; });
+            updateAuthButtons(true);
             applyBusinessMode();
-            // Fetch user info
             fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
               headers: { Authorization: 'Bearer ' + accessToken },
             }).then(function(r) { return r.json(); }).then(function(info) {
@@ -524,11 +954,11 @@
           },
         });
       } else {
-        // GIS not loaded yet, retry
         setTimeout(initGoogleAuth, 200);
       }
     }
 
+    // ==================== Tax Calc ====================
     function calcSole() {
       if (!wasmReady) { alert('読み込み中...'); return; }
       var fy = document.getElementById('s-fiscalYear').value;
@@ -583,8 +1013,7 @@
       } catch (e) { alert('計算エラー: ' + e); }
     }
 
-    var SPREADSHEET_TITLE = 'みんなの経理 税金計算履歴';
-
+    // ==================== Google Sheets ====================
     async function findOrCreateSpreadsheet() {
       var searchRes = await fetch(
         'https://www.googleapis.com/drive/v3/files?q=name%3D%27' + encodeURIComponent(SPREADSHEET_TITLE) + '%27+and+mimeType%3D%27application/vnd.google-apps.spreadsheet%27+and+trashed%3Dfalse&fields=files(id,name)',
@@ -600,12 +1029,49 @@
           properties: { title: SPREADSHEET_TITLE },
           sheets: [
             { properties: { title: '個人事業主' }, data: [{ startRow: 0, startColumn: 0, rowData: [{ values: ['日時','年度','売上','経費','事業所得','所得控除','課税所得','所得税','復興税','住民税','事業税','合計','実効税率'].map(function(v){return {userEnteredValue:{stringValue:v}};}) }] }] },
-            { properties: { title: '法人' }, data: [{ startRow: 0, startColumn: 0, rowData: [{ values: ['日時','年度','売上','経費','課税所得','法人税','地方法人税','法人住民税','法人事業税','特別法人事業税','合計','実効税率'].map(function(v){return {userEnteredValue:{stringValue:v}};}) }] }] }
+            { properties: { title: '法人' }, data: [{ startRow: 0, startColumn: 0, rowData: [{ values: ['日時','年度','売上','経費','課税所得','法人税','地方法人税','法人住民税','法人事業税','特別法人事業税','合計','実効税率'].map(function(v){return {userEnteredValue:{stringValue:v}};}) }] }] },
+            { properties: { title: '仕訳帳' }, data: [{ startRow: 0, startColumn: 0, rowData: [{ values: ['日付','摘要','借方科目コード','借方科目名','貸方科目コード','貸方科目名','金額'].map(function(v){return {userEnteredValue:{stringValue:v}};}) }] }] },
+            { properties: { title: '請求書' }, data: [{ startRow: 0, startColumn: 0, rowData: [{ values: ['請求番号','請求日','請求先','小計','消費税','合計'].map(function(v){return {userEnteredValue:{stringValue:v}};}) }] }] }
           ]
         }),
       });
       var created = await createRes.json();
       return created.spreadsheetId;
+    }
+
+    // Ensure a sheet exists (for existing spreadsheets that may not have all sheets)
+    async function ensureSheet(spreadsheetId, sheetName, headers) {
+      // Check if sheet exists
+      var metaRes = await fetch(
+        'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '?fields=sheets.properties.title',
+        { headers: { Authorization: 'Bearer ' + accessToken } }
+      );
+      var meta = await metaRes.json();
+      var exists = meta.sheets && meta.sheets.some(function(s) { return s.properties.title === sheetName; });
+      if (exists) return;
+
+      // Add the sheet
+      await fetch(
+        'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + ':batchUpdate',
+        {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            requests: [{ addSheet: { properties: { title: sheetName } } }]
+          })
+        }
+      );
+      // Add headers
+      if (headers) {
+        await fetch(
+          'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + encodeURIComponent(sheetName) + '!A1:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS',
+          {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ values: [headers] })
+          }
+        );
+      }
     }
 
     async function saveToSheets(type) {
@@ -639,14 +1105,393 @@
       } catch (e) { statusEl.textContent = '保存エラー: ' + e.message; }
     }
 
-    // Init on DOM ready
+    // ==================== Journal Entries ====================
+    function addJournalEntry() {
+      if (!accessToken) { alert('Googleにログインしてください'); return; }
+      var date = document.getElementById('j-date').value;
+      var desc = document.getElementById('j-description').value.trim();
+      var debit = document.getElementById('j-debit').value;
+      var credit = document.getElementById('j-credit').value;
+      var amount = parseInt(document.getElementById('j-amount').value) || 0;
+
+      if (!date) { alert('日付を入力してください'); return; }
+      if (!desc) { alert('摘要を入力してください'); return; }
+      if (amount <= 0) { alert('金額を入力してください'); return; }
+      if (debit === credit) { alert('借方と貸方は異なる科目を選択してください'); return; }
+
+      saveJournalEntry(date, desc, debit, credit, amount);
+    }
+
+    async function saveJournalEntry(date, desc, debitCode, creditCode, amount) {
+      var statusEl = document.getElementById('j-save-status');
+      statusEl.textContent = '保存中...';
+      try {
+        var spreadsheetId = await findOrCreateSpreadsheet();
+        await ensureSheet(spreadsheetId, '仕訳帳', ['日付','摘要','借方科目コード','借方科目名','貸方科目コード','貸方科目名','金額']);
+        var values = [date, desc, debitCode, getAccountName(debitCode), creditCode, getAccountName(creditCode), amount];
+        await fetch(
+          'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + encodeURIComponent('仕訳帳') + '!A:Z:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS',
+          { method: 'POST', headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [values] }) }
+        );
+        statusEl.textContent = '仕訳を保存しました';
+        // Clear form
+        document.getElementById('j-description').value = '';
+        document.getElementById('j-amount').value = '';
+        // Reload entries
+        loadJournalEntries();
+      } catch (e) { statusEl.textContent = '保存エラー: ' + e.message; }
+    }
+
+    async function loadJournalEntries() {
+      if (!accessToken) return;
+      try {
+        var spreadsheetId = await findOrCreateSpreadsheet();
+        await ensureSheet(spreadsheetId, '仕訳帳', ['日付','摘要','借方科目コード','借方科目名','貸方科目コード','貸方科目名','金額']);
+        var res = await fetch(
+          'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + encodeURIComponent('仕訳帳') + '!A:G',
+          { headers: { Authorization: 'Bearer ' + accessToken } }
+        );
+        var data = await res.json();
+        journalEntries = [];
+        if (data.values && data.values.length > 1) {
+          for (var i = 1; i < data.values.length; i++) {
+            var row = data.values[i];
+            journalEntries.push({
+              rowIndex: i + 1,
+              date: row[0] || '',
+              description: row[1] || '',
+              debitCode: row[2] || '',
+              debitName: row[3] || '',
+              creditCode: row[4] || '',
+              creditName: row[5] || '',
+              amount: parseInt(row[6]) || 0,
+            });
+          }
+        }
+        renderJournalTable();
+      } catch (e) { console.error('仕訳読み込みエラー:', e); }
+    }
+
+    function renderJournalTable() {
+      var tbody = document.getElementById('j-tbody');
+      var table = document.getElementById('j-table');
+      var empty = document.getElementById('j-empty');
+
+      if (journalEntries.length === 0) {
+        table.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      table.style.display = 'table';
+      empty.style.display = 'none';
+      tbody.innerHTML = '';
+
+      // Sort by date descending
+      var sorted = journalEntries.slice().sort(function(a, b) { return b.date.localeCompare(a.date); });
+      sorted.forEach(function(entry) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + escapeHtml(entry.date) + '</td>'
+          + '<td>' + escapeHtml(entry.description) + '</td>'
+          + '<td>' + escapeHtml(entry.debitName) + '</td>'
+          + '<td>' + escapeHtml(entry.creditName) + '</td>'
+          + '<td class="num">' + fmtNum(entry.amount) + '</td>'
+          + '<td><button class="btn-danger" onclick="deleteJournalEntry(' + entry.rowIndex + ')">削除</button></td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function deleteJournalEntry(rowIndex) {
+      if (!confirm('この仕訳を削除しますか？')) return;
+      try {
+        var spreadsheetId = await findOrCreateSpreadsheet();
+        // Get sheet ID for 仕訳帳
+        var metaRes = await fetch(
+          'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '?fields=sheets.properties',
+          { headers: { Authorization: 'Bearer ' + accessToken } }
+        );
+        var meta = await metaRes.json();
+        var sheetId = null;
+        meta.sheets.forEach(function(s) {
+          if (s.properties.title === '仕訳帳') sheetId = s.properties.sheetId;
+        });
+        if (sheetId === null) return;
+
+        await fetch(
+          'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + ':batchUpdate',
+          {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              requests: [{
+                deleteDimension: {
+                  range: { sheetId: sheetId, dimension: 'ROWS', startIndex: rowIndex - 1, endIndex: rowIndex }
+                }
+              }]
+            })
+          }
+        );
+        loadJournalEntries();
+      } catch (e) { alert('削除エラー: ' + e.message); }
+    }
+
+    // ==================== P/L ====================
+    async function generatePL() {
+      if (!accessToken) { alert('Googleにログインしてください'); return; }
+      // Load entries first
+      await loadJournalEntries();
+      if (journalEntries.length === 0) { return; }
+
+      var revenueAccounts = {};
+      var expenseAccounts = {};
+      var totalRevenue = 0;
+      var totalExpense = 0;
+
+      journalEntries.forEach(function(entry) {
+        // Revenue: credit side of revenue accounts
+        var creditCat = getAccountCategory(entry.creditCode);
+        var debitCat = getAccountCategory(entry.debitCode);
+
+        if (creditCat === 'revenue') {
+          var name = entry.creditName;
+          revenueAccounts[name] = (revenueAccounts[name] || 0) + entry.amount;
+          totalRevenue += entry.amount;
+        }
+        if (debitCat === 'revenue') {
+          // Revenue reversal (debit side)
+          var name = entry.debitName;
+          revenueAccounts[name] = (revenueAccounts[name] || 0) - entry.amount;
+          totalRevenue -= entry.amount;
+        }
+        if (debitCat === 'expense') {
+          var name = entry.debitName;
+          expenseAccounts[name] = (expenseAccounts[name] || 0) + entry.amount;
+          totalExpense += entry.amount;
+        }
+        if (creditCat === 'expense') {
+          // Expense reversal (credit side)
+          var name = entry.creditName;
+          expenseAccounts[name] = (expenseAccounts[name] || 0) - entry.amount;
+          totalExpense -= entry.amount;
+        }
+      });
+
+      var profit = totalRevenue - totalExpense;
+
+      // Render
+      var tbody = document.getElementById('pl-tbody');
+      tbody.innerHTML = '';
+
+      function addRow(label, value, bold, cls) {
+        var tr = document.createElement('tr');
+        if (cls) tr.className = cls;
+        var style = bold ? 'font-weight:bold;' : '';
+        tr.innerHTML = '<td style="' + style + '">' + escapeHtml(label) + '</td>'
+          + '<td class="num" style="' + style + '">' + fmtNum(value) + '</td>';
+        tbody.appendChild(tr);
+      }
+
+      function addSeparator() {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="2" style="border-bottom:2px solid #333;padding:0"></td>';
+        tbody.appendChild(tr);
+      }
+
+      // Revenue section
+      addRow('【売上高】', '', true);
+      for (var name in revenueAccounts) {
+        if (revenueAccounts[name] !== 0) addRow('  ' + name, revenueAccounts[name], false);
+      }
+      addSeparator();
+      addRow('売上高 合計', totalRevenue, true);
+
+      // Expense section
+      addRow('', '', false);
+      addRow('【経費】', '', true);
+      // Sort by amount descending
+      var expArr = [];
+      for (var name in expenseAccounts) {
+        if (expenseAccounts[name] !== 0) expArr.push({ name: name, amount: expenseAccounts[name] });
+      }
+      expArr.sort(function(a, b) { return b.amount - a.amount; });
+      expArr.forEach(function(e) { addRow('  ' + e.name, e.amount, false); });
+      addSeparator();
+      addRow('経費 合計', totalExpense, true);
+
+      // Profit
+      addRow('', '', false);
+      addSeparator();
+      var profitTr = document.createElement('tr');
+      profitTr.style.fontSize = '1.2em';
+      profitTr.innerHTML = '<td style="font-weight:bold">当期純利益</td>'
+        + '<td class="num" style="font-weight:bold;color:' + (profit >= 0 ? '#2e7d32' : '#d32f2f') + '">' + fmtNum(profit) + '</td>';
+      tbody.appendChild(profitTr);
+
+      document.getElementById('pl-report').style.display = 'block';
+      document.getElementById('pl-empty').style.display = 'none';
+    }
+
+    // ==================== Invoice ====================
+    function addInvoiceItem() {
+      var container = document.getElementById('inv-items');
+      var row = document.createElement('div');
+      row.className = 'form-row inv-item-row';
+      row.innerHTML = '<div class="form-group w2"><input type="text" placeholder="品名" class="inv-item-name"></div>'
+        + '<div class="form-group" style="width:70px"><input type="number" placeholder="数量" class="inv-item-qty" value="1" min="1"></div>'
+        + '<div class="form-group w1"><input type="number" placeholder="単価" class="inv-item-price" min="0"></div>'
+        + '<div style="display:flex;align-items:flex-end;padding-bottom:2px"><button class="btn-danger" onclick="this.closest(\'.inv-item-row\').remove()">×</button></div>';
+      container.appendChild(row);
+    }
+
+    function generateInvoice() {
+      var client = document.getElementById('inv-client').value.trim();
+      var date = document.getElementById('inv-date').value;
+      var number = document.getElementById('inv-number').value.trim();
+      var due = document.getElementById('inv-due').value;
+      var from = document.getElementById('inv-from').value.trim();
+      var taxRate = parseInt(document.getElementById('inv-tax-rate').value);
+      var notes = document.getElementById('inv-notes').value.trim();
+
+      if (!client) { alert('請求先を入力してください'); return; }
+      if (!date) { alert('請求日を入力してください'); return; }
+
+      var items = [];
+      var subtotal = 0;
+      document.querySelectorAll('.inv-item-row').forEach(function(row) {
+        var name = row.querySelector('.inv-item-name').value.trim();
+        var qty = parseInt(row.querySelector('.inv-item-qty').value) || 0;
+        var price = parseInt(row.querySelector('.inv-item-price').value) || 0;
+        if (name && qty > 0 && price > 0) {
+          var amount = qty * price;
+          items.push({ name: name, qty: qty, price: price, amount: amount });
+          subtotal += amount;
+        }
+      });
+
+      if (items.length === 0) { alert('明細を1行以上入力してください'); return; }
+
+      var tax = Math.floor(subtotal * taxRate / 100);
+      var total = subtotal + tax;
+
+      currentInvoiceData = {
+        client: client, date: date, number: number, due: due,
+        from: from, items: items, subtotal: subtotal,
+        taxRate: taxRate, tax: tax, total: total, notes: notes,
+      };
+
+      // Render preview
+      var dateStr = date.replace(/-/g, '/');
+      var dueStr = due ? due.replace(/-/g, '/') : '';
+
+      var html = '<h2>請求書</h2>';
+      html += '<div class="invoice-header">';
+      html += '<div class="left"><p style="font-size:1.2em;font-weight:bold">' + escapeHtml(client) + ' 御中</p></div>';
+      html += '<div class="right">';
+      if (number) html += '<p>請求番号: ' + escapeHtml(number) + '</p>';
+      html += '<p>請求日: ' + dateStr + '</p>';
+      if (dueStr) html += '<p>お支払期限: ' + dueStr + '</p>';
+      html += '</div></div>';
+
+      html += '<p style="font-size:1.3em;font-weight:bold;margin-bottom:16px">ご請求金額: ' + fmtNum(total) + '円（税込）</p>';
+
+      html += '<table class="invoice-table"><thead><tr><th>品名</th><th class="num">数量</th><th class="num">単価</th><th class="num">金額</th></tr></thead><tbody>';
+      items.forEach(function(item) {
+        html += '<tr><td>' + escapeHtml(item.name) + '</td><td class="num">' + item.qty + '</td><td class="num">' + fmtNum(item.price) + '</td><td class="num">' + fmtNum(item.amount) + '</td></tr>';
+      });
+      html += '</tbody></table>';
+
+      html += '<div class="invoice-totals">';
+      html += '<div class="row"><span>小計</span><span>' + fmtNum(subtotal) + '円</span></div>';
+      html += '<div class="row"><span>消費税（' + taxRate + '%）</span><span>' + fmtNum(tax) + '円</span></div>';
+      html += '<div class="row grand"><span>合計</span><span>' + fmtNum(total) + '円</span></div>';
+      html += '</div>';
+
+      if (notes) {
+        html += '<div style="margin-top:24px;padding:12px;background:#f9f9f9;border-radius:8px;font-size:0.9em"><strong>備考:</strong> ' + escapeHtml(notes) + '</div>';
+      }
+
+      if (from) {
+        html += '<div class="invoice-from"><strong>差出人</strong><br>' + escapeHtml(from).replace(/\n/g, '<br>') + '</div>';
+      }
+
+      document.getElementById('inv-preview').innerHTML = html;
+      document.getElementById('inv-preview-container').style.display = 'block';
+    }
+
+    function printInvoice() {
+      window.print();
+    }
+
+    async function saveInvoiceToSheets() {
+      if (!accessToken || !currentInvoiceData) return;
+      var statusEl = document.getElementById('inv-save-status');
+      statusEl.textContent = '保存中...';
+      try {
+        var spreadsheetId = await findOrCreateSpreadsheet();
+        await ensureSheet(spreadsheetId, '請求書', ['請求番号','請求日','請求先','小計','消費税','合計']);
+        var d = currentInvoiceData;
+        var values = [d.number, d.date, d.client, d.subtotal, d.tax, d.total];
+        await fetch(
+          'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + encodeURIComponent('請求書') + '!A:Z:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS',
+          { method: 'POST', headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [values] }) }
+        );
+        statusEl.textContent = '保存しました';
+      } catch (e) { statusEl.textContent = '保存エラー: ' + e.message; }
+    }
+
+    // ==================== Utilities ====================
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
+
+    function populateAccountSelects() {
+      var debitSel = document.getElementById('j-debit');
+      var creditSel = document.getElementById('j-credit');
+      var groups = [
+        { label: '資産', accounts: ACCOUNTS.asset },
+        { label: '負債', accounts: ACCOUNTS.liability },
+        { label: '収益', accounts: ACCOUNTS.revenue },
+        { label: '費用', accounts: ACCOUNTS.expense },
+      ];
+      [debitSel, creditSel].forEach(function(sel) {
+        sel.innerHTML = '';
+        groups.forEach(function(g) {
+          var optgroup = document.createElement('optgroup');
+          optgroup.label = g.label;
+          g.accounts.forEach(function(a) {
+            var opt = document.createElement('option');
+            opt.value = a.code;
+            opt.textContent = a.name;
+            optgroup.appendChild(opt);
+          });
+          sel.appendChild(optgroup);
+        });
+      });
+      // Default: debit=経費(消耗品費), credit=普通預金
+      debitSel.value = '523';
+      creditSel.value = '110';
+    }
+
+    // ==================== Init ====================
     document.addEventListener('DOMContentLoaded', function() {
+      // Set today as default date
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('j-date').value = today;
+      document.getElementById('inv-date').value = today;
+      // Due date: end of next month
+      var nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 2, 0);
+      document.getElementById('inv-due').value = nextMonth.toISOString().split('T')[0];
+
+      populateAccountSelects();
       applyBusinessMode();
       initGoogleAuth();
     });
   </script>
 
-  <!-- WASM module (loaded async, sets wasmReady when done) -->
+  <!-- WASM module -->
   <script type="module">
     import init, { calc_sole_proprietor, calc_corporate } from './pkg/minnano_keiri.js';
     await init();
